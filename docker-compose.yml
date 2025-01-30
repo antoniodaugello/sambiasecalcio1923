@@ -1,0 +1,45 @@
+services:
+  php:
+    image: daugdev/joomla-sambiase-archive:v1.0  # immagine Sambiase 2010
+    container_name: php-sambiase
+    volumes:
+      - ./php.ini:/etc/php5/apache2/php.ini
+    ports:
+      - "8080:80"
+    networks:
+      - joomla-network
+
+  mysql:
+    image: mysql:5.5
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: db_sambiasecalcio
+      MYSQL_USER: usr_sambiase
+      MYSQL_PASSWORD: passprova
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - joomla-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+      UPLOAD_LIMIT: 128M
+    networks:
+      - joomla-network
+
+volumes:
+  mysql_data:
+
+networks:
+  joomla-network:
+    driver: bridge
